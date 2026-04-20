@@ -8,6 +8,8 @@ import { Check } from "lucide-react";
 interface Props {
   onApply: (nodes: GraphNode[], edges: GraphEdge[]) => void;
   initialN?: number;
+  /** When provided, fills the input cells with these computed values (e.g. final shortest distances). */
+  updatedMatrix?: number[][] | null;
 }
 
 // Layout nodes in a circle
@@ -21,7 +23,7 @@ function layoutNodes(n: number): GraphNode[] {
   });
 }
 
-export function MatrixInput({ onApply, initialN = 4 }: Props) {
+export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Props) {
   const [n, setN] = useState(initialN);
   const [matrix, setMatrix] = useState<string[][]>(() =>
     Array.from({ length: initialN }, (_, i) =>
@@ -45,6 +47,22 @@ export function MatrixInput({ onApply, initialN = 4 }: Props) {
       return next;
     });
   }, [n]);
+
+  // When an updated matrix is supplied (post-run), fill cells with computed values
+  useEffect(() => {
+    if (!updatedMatrix || updatedMatrix.length === 0) return;
+    const m = updatedMatrix;
+    setMatrix(
+      Array.from({ length: m.length }, (_, i) =>
+        Array.from({ length: m.length }, (_, j) => {
+          if (i === j) return "0";
+          const v = m[i][j];
+          if (v === Infinity) return "∞";
+          return String(v);
+        }),
+      ),
+    );
+  }, [updatedMatrix]);
 
   const updateCell = (i: number, j: number, val: string) => {
     // Only allow numbers, empty, or "inf"/"∞"
