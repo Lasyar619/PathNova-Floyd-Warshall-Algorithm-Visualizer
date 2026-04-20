@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, RotateCcw, Trash2, Sparkles, GitBranch, Zap } from "lucide-react";
+import { MatrixInput } from "@/components/MatrixInput";
+import { Play, Pause, RotateCcw, Trash2, Sparkles, GitBranch, Zap, Grid3x3, MousePointer2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
