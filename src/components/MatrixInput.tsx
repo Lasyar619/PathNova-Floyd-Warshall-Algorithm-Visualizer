@@ -31,6 +31,7 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
     ),
   );
   const [error, setError] = useState<string | null>(null);
+  const [symmetric, setSymmetric] = useState(true);
 
   // Resize matrix when n changes
   useEffect(() => {
@@ -82,7 +83,7 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
       setError("Max 12 nodes for visualization.");
       return;
     }
-    const edges: GraphEdge[] = [];
+    const edgeMap = new Map<string, number>();
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         if (i === j) continue;
@@ -93,9 +94,21 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
           setError(`Invalid value at [${i}][${j}]: "${matrix[i][j]}"`);
           return;
         }
-        edges.push({ from: i, to: j, weight: w });
+        edgeMap.set(`${i}->${j}`, w);
+        if (symmetric) {
+          const revKey = `${j}->${i}`;
+          // mirror only if reverse cell is empty/unset
+          const revRaw = matrix[j][i].trim().toLowerCase();
+          if (revRaw === "" || revRaw === "inf" || revRaw === "∞" || revRaw === "-") {
+            edgeMap.set(revKey, w);
+          }
+        }
       }
     }
+    const edges: GraphEdge[] = Array.from(edgeMap.entries()).map(([k, w]) => {
+      const [a, b] = k.split("->").map(Number);
+      return { from: a, to: b, weight: w };
+    });
     const nodes = layoutNodes(n);
     onApply(nodes, edges);
   };
@@ -156,11 +169,24 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
             </Button>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground flex-1 min-w-[200px]">
-          Enter edge weights in the adjacency matrix below. Leave a cell{" "}
-          <span className="text-foreground">empty</span> (or type <code>inf</code>) for no edge.
-          Diagonal is always 0.
-        </p>
+        <div className="flex-1 min-w-[200px]">
+          <p className="text-xs text-muted-foreground mb-2">
+            Enter edge weights below. Leave a cell <span className="text-foreground">empty</span>{" "}
+            (or type <code>inf</code>) for no edge. Diagonal is always 0.
+          </p>
+          <label className="inline-flex items-center gap-2 cursor-pointer text-sm select-none">
+            <input
+              type="checkbox"
+              checked={symmetric}
+              onChange={(e) => setSymmetric(e.target.checked)}
+              className="h-4 w-4 accent-[var(--primary)]"
+            />
+            <span className="text-foreground font-medium">Symmetric (undirected)</span>
+            <span className="text-xs text-muted-foreground">
+              — auto-mirror edges so all pairs become reachable
+            </span>
+          </label>
+        </div>
       </div>
 
       <div className="overflow-auto">
