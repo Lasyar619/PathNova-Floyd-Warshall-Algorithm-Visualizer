@@ -364,6 +364,7 @@ function Index() {
                   : null
               }
               title={finished ? "Final Distance Matrix" : "Distance Matrix"}
+              isFinal={finished}
             />
           </section>
         )}
