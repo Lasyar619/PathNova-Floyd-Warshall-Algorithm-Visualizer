@@ -8,6 +8,8 @@ import { Check } from "lucide-react";
 interface Props {
   onApply: (nodes: GraphNode[], edges: GraphEdge[]) => void;
   initialN?: number;
+  /** When provided, fills the input cells with these computed values (e.g. final shortest distances). */
+  updatedMatrix?: number[][] | null;
 }
 
 // Layout nodes in a circle
