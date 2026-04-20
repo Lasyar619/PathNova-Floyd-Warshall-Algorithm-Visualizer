@@ -347,8 +347,8 @@ function Index() {
             highlightEdges={liveHighlight}
             activeNodes={activeNodes}
             selectedNode={selectedNode}
-            onCanvasClick={addNodeAt}
-            onNodeClick={handleNodeClick}
+            onCanvasClick={inputMode === "draw" ? addNodeAt : undefined}
+            onNodeClick={inputMode === "draw" ? handleNodeClick : undefined}
             onNodeDrag={dragNode}
           />
         </section>
