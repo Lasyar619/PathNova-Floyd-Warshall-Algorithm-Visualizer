@@ -46,6 +46,7 @@ function Index() {
   const [edges, setEdges] = useState<GraphEdge[]>(SAMPLE_EDGES);
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
   const [edgeWeight, setEdgeWeight] = useState("1");
+  const [inputMode, setInputMode] = useState<"matrix" | "draw">("matrix");
 
   const [running, setRunning] = useState(false);
   const [stepIdx, setStepIdx] = useState(-1);
