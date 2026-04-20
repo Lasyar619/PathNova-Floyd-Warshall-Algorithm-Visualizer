@@ -103,17 +103,40 @@ export function MatrixInput({ onApply, initialN = 4 }: Props) {
           <Label className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5 block">
             Number of Nodes
           </Label>
-          <Input
-            type="number"
-            min={2}
-            max={12}
-            value={n}
-            onChange={(e) => {
-              const v = Math.max(2, Math.min(12, parseInt(e.target.value) || 2));
-              setN(v);
-            }}
-            className="w-24"
-          />
+          <div className="flex items-center gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setN((v) => Math.max(2, v - 1))}
+              disabled={n <= 2}
+              className="h-10 w-10"
+            >
+              −
+            </Button>
+            <Input
+              type="number"
+              min={2}
+              max={12}
+              value={n}
+              onChange={(e) => {
+                const raw = parseInt(e.target.value);
+                if (Number.isNaN(raw)) return;
+                setN(Math.max(2, Math.min(12, raw)));
+              }}
+              className="w-16 text-center font-bold text-lg"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setN((v) => Math.min(12, v + 1))}
+              disabled={n >= 12}
+              className="h-10 w-10"
+            >
+              +
+            </Button>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground flex-1 min-w-[200px]">
           Enter edge weights in the adjacency matrix below. Leave a cell{" "}
