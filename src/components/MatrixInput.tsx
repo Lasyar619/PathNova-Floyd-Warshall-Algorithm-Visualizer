@@ -48,6 +48,22 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
     });
   }, [n]);
 
+  // When an updated matrix is supplied (post-run), fill cells with computed values
+  useEffect(() => {
+    if (!updatedMatrix || updatedMatrix.length === 0) return;
+    const m = updatedMatrix;
+    setMatrix(
+      Array.from({ length: m.length }, (_, i) =>
+        Array.from({ length: m.length }, (_, j) => {
+          if (i === j) return "0";
+          const v = m[i][j];
+          if (v === Infinity) return "∞";
+          return String(v);
+        }),
+      ),
+    );
+  }, [updatedMatrix]);
+
   const updateCell = (i: number, j: number, val: string) => {
     // Only allow numbers, empty, or "inf"/"∞"
     if (val !== "" && val !== "-" && !/^-?\d*\.?\d*$/.test(val) && val.toLowerCase() !== "inf") {
