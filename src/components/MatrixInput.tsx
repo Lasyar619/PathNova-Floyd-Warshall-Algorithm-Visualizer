@@ -82,7 +82,7 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
       setError("Max 12 nodes for visualization.");
       return;
     }
-    const edges: GraphEdge[] = [];
+    const edgeMap = new Map<string, number>();
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         if (i === j) continue;
@@ -93,9 +93,21 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
           setError(`Invalid value at [${i}][${j}]: "${matrix[i][j]}"`);
           return;
         }
-        edges.push({ from: i, to: j, weight: w });
+        edgeMap.set(`${i}->${j}`, w);
+        if (symmetric) {
+          const revKey = `${j}->${i}`;
+          // mirror only if reverse cell is empty/unset
+          const revRaw = matrix[j][i].trim().toLowerCase();
+          if (revRaw === "" || revRaw === "inf" || revRaw === "∞" || revRaw === "-") {
+            edgeMap.set(revKey, w);
+          }
+        }
       }
     }
+    const edges: GraphEdge[] = Array.from(edgeMap.entries()).map(([k, w]) => {
+      const [a, b] = k.split("->").map(Number);
+      return { from: a, to: b, weight: w };
+    });
     const nodes = layoutNodes(n);
     onApply(nodes, edges);
   };
