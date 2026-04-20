@@ -23,7 +23,7 @@ function layoutNodes(n: number): GraphNode[] {
   });
 }
 
-export function MatrixInput({ onApply, initialN = 4 }: Props) {
+export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Props) {
   const [n, setN] = useState(initialN);
   const [matrix, setMatrix] = useState<string[][]>(() =>
     Array.from({ length: initialN }, (_, i) =>
