@@ -169,11 +169,24 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
             </Button>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground flex-1 min-w-[200px]">
-          Enter edge weights in the adjacency matrix below. Leave a cell{" "}
-          <span className="text-foreground">empty</span> (or type <code>inf</code>) for no edge.
-          Diagonal is always 0.
-        </p>
+        <div className="flex-1 min-w-[200px]">
+          <p className="text-xs text-muted-foreground mb-2">
+            Enter edge weights below. Leave a cell <span className="text-foreground">empty</span>{" "}
+            (or type <code>inf</code>) for no edge. Diagonal is always 0.
+          </p>
+          <label className="inline-flex items-center gap-2 cursor-pointer text-sm select-none">
+            <input
+              type="checkbox"
+              checked={symmetric}
+              onChange={(e) => setSymmetric(e.target.checked)}
+              className="h-4 w-4 accent-[var(--primary)]"
+            />
+            <span className="text-foreground font-medium">Symmetric (undirected)</span>
+            <span className="text-xs text-muted-foreground">
+              — auto-mirror edges so all pairs become reachable
+            </span>
+          </label>
+        </div>
       </div>
 
       <div className="overflow-auto">
