@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, RotateCcw, Trash2, Sparkles, GitBranch, Zap } from "lucide-react";
+import { MatrixInput } from "@/components/MatrixInput";
+import { Play, Pause, RotateCcw, Trash2, Sparkles, GitBranch, Zap, Grid3x3, MousePointer2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -45,6 +46,7 @@ function Index() {
   const [edges, setEdges] = useState<GraphEdge[]>(SAMPLE_EDGES);
   const [selectedNode, setSelectedNode] = useState<number | null>(null);
   const [edgeWeight, setEdgeWeight] = useState("1");
+  const [inputMode, setInputMode] = useState<"matrix" | "draw">("matrix");
 
   const [running, setRunning] = useState(false);
   const [stepIdx, setStepIdx] = useState(-1);
@@ -193,42 +195,85 @@ function Index() {
           </p>
         </header>
 
+        {/* Mode Toggle */}
+        <div className="mb-4 flex justify-center">
+          <div className="inline-flex rounded-lg bg-card/60 border border-border/50 p-1 backdrop-blur">
+            <button
+              onClick={() => setInputMode("matrix")}
+              className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-smooth ${
+                inputMode === "matrix"
+                  ? "bg-gradient-primary text-primary-foreground shadow-glow"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Grid3x3 className="h-4 w-4" /> Matrix Input
+            </button>
+            <button
+              onClick={() => setInputMode("draw")}
+              className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-smooth ${
+                inputMode === "draw"
+                  ? "bg-gradient-primary text-primary-foreground shadow-glow"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <MousePointer2 className="h-4 w-4" /> Draw Mode
+            </button>
+          </div>
+        </div>
+
+        {/* Matrix Input Mode */}
+        {inputMode === "matrix" && (
+          <section className="mb-6">
+            <MatrixInput
+              initialN={nodes.length || 4}
+              onApply={(ns, es) => {
+                setNodes(ns);
+                setEdges(es);
+                setSelectedNode(null);
+                resetRun();
+              }}
+            />
+          </section>
+        )}
+
         {/* Controls */}
         <section className="mb-6 rounded-xl bg-gradient-card border border-border/50 shadow-elegant p-5">
-          <div className="flex flex-wrap items-end gap-4">
-            <div className="flex-1 min-w-[200px]">
-              <Label className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5 block">
-                How to build
-              </Label>
-              <p className="text-sm">
-                <span className="text-primary font-medium">Click empty space</span> to add a node ·{" "}
-                <span className="text-accent font-medium">Click two nodes</span> to add an edge ·
-                Drag nodes to reposition
-              </p>
+          {inputMode === "draw" && (
+            <div className="flex flex-wrap items-end gap-4">
+              <div className="flex-1 min-w-[200px]">
+                <Label className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5 block">
+                  How to build
+                </Label>
+                <p className="text-sm">
+                  <span className="text-primary font-medium">Click empty space</span> to add a node ·{" "}
+                  <span className="text-accent font-medium">Click two nodes</span> to add an edge ·
+                  Drag nodes to reposition
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="weight" className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5 block">
+                  Edge Weight
+                </Label>
+                <Input
+                  id="weight"
+                  type="number"
+                  value={edgeWeight}
+                  onChange={(e) => setEdgeWeight(e.target.value)}
+                  className="w-24"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={loadSample} variant="secondary">
+                  <GitBranch className="mr-2 h-4 w-4" /> Sample
+                </Button>
+                <Button onClick={clearAll} variant="outline">
+                  <Trash2 className="mr-2 h-4 w-4" /> Clear
+                </Button>
+              </div>
             </div>
-            <div>
-              <Label htmlFor="weight" className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5 block">
-                Edge Weight
-              </Label>
-              <Input
-                id="weight"
-                type="number"
-                value={edgeWeight}
-                onChange={(e) => setEdgeWeight(e.target.value)}
-                className="w-24"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={loadSample} variant="secondary">
-                <GitBranch className="mr-2 h-4 w-4" /> Sample
-              </Button>
-              <Button onClick={clearAll} variant="outline">
-                <Trash2 className="mr-2 h-4 w-4" /> Clear
-              </Button>
-            </div>
-          </div>
+          )}
 
-          <div className="mt-5 flex flex-wrap items-center gap-4 pt-5 border-t border-border/40">
+          <div className={inputMode === "draw" ? "mt-5 flex flex-wrap items-center gap-4 pt-5 border-t border-border/40" : "flex flex-wrap items-center gap-4"}>
             <Button
               onClick={running ? () => setRunning(false) : start}
               disabled={nodes.length < 2}
@@ -302,8 +347,8 @@ function Index() {
             highlightEdges={liveHighlight}
             activeNodes={activeNodes}
             selectedNode={selectedNode}
-            onCanvasClick={addNodeAt}
-            onNodeClick={handleNodeClick}
+            onCanvasClick={inputMode === "draw" ? addNodeAt : undefined}
+            onNodeClick={inputMode === "draw" ? handleNodeClick : undefined}
             onNodeDrag={dragNode}
           />
         </section>
