@@ -136,27 +136,16 @@ function Index() {
   // Build "shortest path graph": for each pair i!=j with finite dist, draw aggregated edges of the path
   const shortestPathEdges: GraphEdge[] = useMemo(() => {
     if (!finished) return [];
-    const map = new Map<string, number>();
+    const out: GraphEdge[] = [];
     for (let i = 0; i < nodes.length; i++) {
       for (let j = 0; j < nodes.length; j++) {
         if (i === j) continue;
         if (result.dist[i][j] === INF) continue;
-        const path = reconstructPath(result.next, i, j);
-        for (let k = 0; k < path.length - 1; k++) {
-          const a = path[k];
-          const b = path[k + 1];
-          const key = `${a}->${b}`;
-          if (!map.has(key)) {
-            map.set(key, result.dist[a][b]);
-          }
-        }
+        out.push({ from: i, to: j, weight: result.dist[i][j] });
       }
     }
-    return Array.from(map.entries()).map(([k, w]) => {
-      const [a, b] = k.split("->").map(Number);
-      return { from: a, to: b, weight: w };
-    });
-  }, [finished, nodes.length, result.next, result.dist]);
+    return out;
+  }, [finished, nodes.length, result.dist]);
 
   const fromN = parseInt(pathFrom);
   const toN = parseInt(pathTo);
