@@ -123,6 +123,18 @@ function Index() {
     setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, x, y } : n)));
   };
 
+  const deleteNode = (id: number) => {
+    setNodes((ns) => ns.filter((n) => n.id !== id));
+    setEdges((es) => es.filter((e) => e.from !== id && e.to !== id));
+    setSelectedNode((s) => (s === id ? null : s));
+    resetRun();
+  };
+
+  const deleteEdge = (from: number, to: number) => {
+    setEdges((es) => es.filter((e) => !(e.from === from && e.to === to)));
+    resetRun();
+  };
+
   const resetRun = () => {
     setRunning(false);
     setStepIdx(-1);
