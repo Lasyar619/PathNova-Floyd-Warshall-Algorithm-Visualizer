@@ -140,14 +140,14 @@ function Index() {
     for (let i = 0; i < nodes.length; i++) {
       for (let j = 0; j < nodes.length; j++) {
         if (i === j) continue;
+        if (result.dist[i][j] === INF) continue;
         const path = reconstructPath(result.next, i, j);
         for (let k = 0; k < path.length - 1; k++) {
-          const key = `${path[k]}->${path[k + 1]}`;
+          const a = path[k];
+          const b = path[k + 1];
+          const key = `${a}->${b}`;
           if (!map.has(key)) {
-            const orig = edges.find(
-              (e) => e.from === path[k] && e.to === path[k + 1],
-            );
-            map.set(key, orig?.weight ?? 0);
+            map.set(key, result.dist[a][b]);
           }
         }
       }
@@ -156,7 +156,7 @@ function Index() {
       const [a, b] = k.split("->").map(Number);
       return { from: a, to: b, weight: w };
     });
-  }, [finished, nodes.length, result.next, edges]);
+  }, [finished, nodes.length, result.next, result.dist]);
 
   const fromN = parseInt(pathFrom);
   const toN = parseInt(pathTo);
