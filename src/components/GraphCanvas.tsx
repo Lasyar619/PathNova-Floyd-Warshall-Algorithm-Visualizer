@@ -141,7 +141,16 @@ export function GraphCanvas({
                 markerEnd={active ? "url(#arrow-active)" : "url(#arrow)"}
                 className={active ? "animate-flow" : ""}
               />
-              <g transform={`translate(${mx + ox}, ${my + oy})`}>
+              <g
+                transform={`translate(${mx + ox}, ${my + oy})`}
+                className={onEdgeDelete ? "cursor-pointer" : ""}
+                onClick={(ev) => {
+                  if (!onEdgeDelete) return;
+                  ev.stopPropagation();
+                  onEdgeDelete(e.from, e.to);
+                }}
+              >
+                {onEdgeDelete && <title>Click to delete this edge</title>}
                 <rect
                   x={-12}
                   y={-10}
