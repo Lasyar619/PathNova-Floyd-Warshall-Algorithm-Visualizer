@@ -53,12 +53,25 @@ export function floydWarshall(n: number, edges: { from: number; to: number; weig
 }
 
 export function reconstructPath(next: (number | null)[][], u: number, v: number): number[] {
-  if (next[u][v] === null) return [];
+  if (
+    u < 0 ||
+    v < 0 ||
+    u >= next.length ||
+    v >= next.length ||
+    !next[u] ||
+    next[u][v] === undefined ||
+    next[u][v] === null
+  ) {
+    return [];
+  }
+
   const path = [u];
   let cur = u;
   while (cur !== v) {
-    const nx = next[cur][v];
-    if (nx === null) return [];
+    const row = next[cur];
+    if (!row) return [];
+    const nx = row[v];
+    if (nx === null || nx === undefined) return [];
     path.push(nx);
     cur = nx;
   }
