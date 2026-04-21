@@ -56,6 +56,25 @@ function Index() {
   const [pathFrom, setPathFrom] = useState<string>("0");
   const [pathTo, setPathTo] = useState<string>("3");
 
+  useEffect(() => {
+    if (nodes.length === 0) return;
+
+    setPathFrom((prev) => {
+      const value = Number.parseInt(prev, 10);
+      if (Number.isNaN(value) || value < 0) return "0";
+      return String(Math.min(value, nodes.length - 1));
+    });
+
+    setPathTo((prev) => {
+      const fallback = nodes.length > 1 ? 1 : 0;
+      const value = Number.parseInt(prev, 10);
+      if (Number.isNaN(value) || value < 0 || value >= nodes.length) {
+        return String(fallback);
+      }
+      return String(value);
+    });
+  }, [nodes.length]);
+
   const result = useMemo(
     () => floydWarshall(nodes.length, edges),
     [nodes.length, edges],
@@ -149,12 +168,16 @@ function Index() {
 
   const fromN = parseInt(pathFrom);
   const toN = parseInt(pathTo);
-  const queryPath =
-    finished && !isNaN(fromN) && !isNaN(toN)
-      ? reconstructPath(result.next, fromN, toN)
-      : [];
-  const queryDist =
-    finished && !isNaN(fromN) && !isNaN(toN) ? result.dist[fromN]?.[toN] : null;
+  const hasValidQuery =
+    finished &&
+    !isNaN(fromN) &&
+    !isNaN(toN) &&
+    fromN >= 0 &&
+    toN >= 0 &&
+    fromN < nodes.length &&
+    toN < nodes.length;
+  const queryPath = hasValidQuery ? reconstructPath(result.next, fromN, toN) : [];
+  const queryDist = hasValidQuery ? result.dist[fromN]?.[toN] ?? null : null;
   const queryHighlight: { from: number; to: number }[] = [];
   for (let i = 0; i < queryPath.length - 1; i++) {
     queryHighlight.push({ from: queryPath[i], to: queryPath[i + 1] });
