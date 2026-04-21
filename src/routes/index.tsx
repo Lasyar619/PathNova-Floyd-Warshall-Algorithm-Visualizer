@@ -375,6 +375,8 @@ function Index() {
             onCanvasClick={inputMode === "draw" ? addNodeAt : undefined}
             onNodeClick={inputMode === "draw" ? handleNodeClick : undefined}
             onNodeDrag={dragNode}
+            onNodeDelete={inputMode === "draw" ? deleteNode : undefined}
+            onEdgeDelete={inputMode === "draw" ? deleteEdge : undefined}
           />
         </section>
 
