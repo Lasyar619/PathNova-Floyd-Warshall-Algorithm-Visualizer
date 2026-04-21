@@ -19,6 +19,8 @@ interface Props {
   onCanvasClick?: (x: number, y: number) => void;
   onNodeClick?: (id: number) => void;
   onNodeDrag?: (id: number, x: number, y: number) => void;
+  onNodeDelete?: (id: number) => void;
+  onEdgeDelete?: (from: number, to: number) => void;
   selectedNode?: number | null;
   title: string;
   subtitle?: string;
