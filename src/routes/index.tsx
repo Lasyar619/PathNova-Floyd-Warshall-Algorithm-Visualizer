@@ -123,6 +123,18 @@ function Index() {
     setNodes((ns) => ns.map((n) => (n.id === id ? { ...n, x, y } : n)));
   };
 
+  const deleteNode = (id: number) => {
+    setNodes((ns) => ns.filter((n) => n.id !== id));
+    setEdges((es) => es.filter((e) => e.from !== id && e.to !== id));
+    setSelectedNode((s) => (s === id ? null : s));
+    resetRun();
+  };
+
+  const deleteEdge = (from: number, to: number) => {
+    setEdges((es) => es.filter((e) => !(e.from === from && e.to === to)));
+    resetRun();
+  };
+
   const resetRun = () => {
     setRunning(false);
     setStepIdx(-1);
@@ -260,7 +272,9 @@ function Index() {
                 <p className="text-sm">
                   <span className="text-primary font-medium">Click empty space</span> to add a node ·{" "}
                   <span className="text-accent font-medium">Click two nodes</span> to add an edge ·
-                  Drag nodes to reposition
+                  Drag to reposition ·{" "}
+                  <span className="text-destructive font-medium">Right-click a node</span> or{" "}
+                  <span className="text-destructive font-medium">click an edge weight</span> to delete
                 </p>
               </div>
               <div>
@@ -363,6 +377,8 @@ function Index() {
             onCanvasClick={inputMode === "draw" ? addNodeAt : undefined}
             onNodeClick={inputMode === "draw" ? handleNodeClick : undefined}
             onNodeDrag={dragNode}
+            onNodeDelete={inputMode === "draw" ? deleteNode : undefined}
+            onEdgeDelete={inputMode === "draw" ? deleteEdge : undefined}
           />
         </section>
 

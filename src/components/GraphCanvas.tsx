@@ -19,6 +19,8 @@ interface Props {
   onCanvasClick?: (x: number, y: number) => void;
   onNodeClick?: (id: number) => void;
   onNodeDrag?: (id: number, x: number, y: number) => void;
+  onNodeDelete?: (id: number) => void;
+  onEdgeDelete?: (from: number, to: number) => void;
   selectedNode?: number | null;
   title: string;
   subtitle?: string;
@@ -33,6 +35,8 @@ export function GraphCanvas({
   onCanvasClick,
   onNodeClick,
   onNodeDrag,
+  onNodeDelete,
+  onEdgeDelete,
   selectedNode = null,
   title,
   subtitle,
@@ -137,7 +141,16 @@ export function GraphCanvas({
                 markerEnd={active ? "url(#arrow-active)" : "url(#arrow)"}
                 className={active ? "animate-flow" : ""}
               />
-              <g transform={`translate(${mx + ox}, ${my + oy})`}>
+              <g
+                transform={`translate(${mx + ox}, ${my + oy})`}
+                className={onEdgeDelete ? "cursor-pointer" : ""}
+                onClick={(ev) => {
+                  if (!onEdgeDelete) return;
+                  ev.stopPropagation();
+                  onEdgeDelete(e.from, e.to);
+                }}
+              >
+                {onEdgeDelete && <title>Click to delete this edge</title>}
                 <rect
                   x={-12}
                   y={-10}
@@ -174,7 +187,14 @@ export function GraphCanvas({
                 ev.stopPropagation();
                 onNodeClick?.(n.id);
               }}
+              onContextMenu={(ev) => {
+                if (!onNodeDelete) return;
+                ev.preventDefault();
+                ev.stopPropagation();
+                onNodeDelete(n.id);
+              }}
             >
+              {onNodeDelete && <title>Right-click to delete this node</title>}
               <circle
                 r={26}
                 fill="var(--node)"
