@@ -35,6 +35,8 @@ export function GraphCanvas({
   onCanvasClick,
   onNodeClick,
   onNodeDrag,
+  onNodeDelete,
+  onEdgeDelete,
   selectedNode = null,
   title,
   subtitle,
