@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "All-Pairs Shortest Path Visualizer · Floyd–Warshall" },
+      { title: "PathNova" },
       {
         name: "description",
         content:
@@ -187,7 +187,7 @@ function Index() {
             Floyd–Warshall · Interactive Visualizer
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            <span className="text-gradient">All-Pairs</span> Shortest Path
+            <span className="text-gradient">Path</span>Nova
           </h1>
           <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
             Build a weighted directed graph, then watch the algorithm relax every pair through
