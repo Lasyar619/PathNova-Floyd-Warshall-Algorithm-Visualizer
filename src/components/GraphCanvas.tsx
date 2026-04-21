@@ -187,7 +187,14 @@ export function GraphCanvas({
                 ev.stopPropagation();
                 onNodeClick?.(n.id);
               }}
+              onContextMenu={(ev) => {
+                if (!onNodeDelete) return;
+                ev.preventDefault();
+                ev.stopPropagation();
+                onNodeDelete(n.id);
+              }}
             >
+              {onNodeDelete && <title>Right-click to delete this node</title>}
               <circle
                 r={26}
                 fill="var(--node)"
