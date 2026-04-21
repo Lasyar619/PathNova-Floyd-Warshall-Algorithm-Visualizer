@@ -120,24 +120,20 @@ export function GraphCanvas({
           const len = Math.hypot(dx, dy) || 1;
           const r = 22;
           const hasReverse = edges.some((o) => o.from === e.to && o.to === e.from);
-          const curveOffset = hasReverse ? 28 : 0;
+          const offset = hasReverse ? 14 : 0;
           const px = -dy / len;
           const py = dx / len;
-          const sx = a.x + (dx / len) * r;
-          const sy = a.y + (dy / len) * r;
-          const ex = b.x - (dx / len) * r;
-          const ey = b.y - (dy / len) * r;
-          const cx = (a.x + b.x) / 2 + px * curveOffset;
-          const cy = (a.y + b.y) / 2 + py * curveOffset;
-          const mx = 0.25 * sx + 0.5 * cx + 0.25 * ex;
-          const my = 0.25 * sy + 0.5 * cy + 0.25 * ey;
-          const labelOffset = hasReverse ? 0 : 12;
+          const sx = a.x + (dx / len) * r + px * offset;
+          const sy = a.y + (dy / len) * r + py * offset;
+          const ex = b.x - (dx / len) * r + px * offset;
+          const ey = b.y - (dy / len) * r + py * offset;
+          const mx = (sx + ex) / 2;
+          const my = (sy + ey) / 2;
+          const labelOffset = hasReverse ? 10 : 12;
           const lx = mx + px * labelOffset;
           const ly = my + py * labelOffset;
           const active = isHighlighted(e.from, e.to);
-          const pathD = hasReverse
-            ? `M ${sx} ${sy} Q ${cx} ${cy} ${ex} ${ey}`
-            : `M ${sx} ${sy} L ${ex} ${ey}`;
+          const pathD = `M ${sx} ${sy} L ${ex} ${ey}`;
           return (
             <g key={i}>
               <path
