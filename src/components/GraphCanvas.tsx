@@ -120,7 +120,7 @@ export function GraphCanvas({
           const len = Math.hypot(dx, dy) || 1;
           const r = 22;
           const hasReverse = edges.some((o) => o.from === e.to && o.to === e.from);
-          const offset = hasReverse ? 14 : 0;
+          const offset = hasReverse ? 6 : 0;
           const px = -dy / len;
           const py = dx / len;
           const sx = a.x + (dx / len) * r + px * offset;
