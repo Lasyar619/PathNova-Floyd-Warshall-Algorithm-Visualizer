@@ -87,7 +87,7 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         if (i === j) continue;
-        const raw = matrix[i][j].trim().toLowerCase();
+        const raw = matrix[i]?.[j]?.trim().toLowerCase() ?? "";
         if (raw === "" || raw === "inf" || raw === "∞" || raw === "-") continue;
         const w = Number(raw);
         if (!Number.isFinite(w)) {
@@ -97,8 +97,7 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
         edgeMap.set(`${i}->${j}`, w);
         if (symmetric) {
           const revKey = `${j}->${i}`;
-          // mirror only if reverse cell is empty/unset
-          const revRaw = matrix[j][i].trim().toLowerCase();
+          const revRaw = matrix[j]?.[i]?.trim().toLowerCase() ?? "";
           if (revRaw === "" || revRaw === "inf" || revRaw === "∞" || revRaw === "-") {
             edgeMap.set(revKey, w);
           }
@@ -112,6 +111,15 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
     const nodes = layoutNodes(n);
     onApply(nodes, edges);
   };
+
+  // Auto-apply matrix edits so users don't need to click "Build Graph" first.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (n >= 2 && n <= 12) apply();
+    }, 150);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matrix, symmetric, n]);
 
   const fillEmpty = () => {
     setMatrix((m) =>

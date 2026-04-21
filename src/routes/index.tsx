@@ -221,7 +221,7 @@ function Index() {
                 setSelectedNode(null);
                 resetRun();
               }}
-              updatedMatrix={finished ? result.dist : null}
+              updatedMatrix={null}
             />
           </section>
         )}
