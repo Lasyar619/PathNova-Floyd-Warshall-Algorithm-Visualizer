@@ -205,6 +205,9 @@ function Index() {
   return (
     <main className="min-h-screen w-full px-4 py-8 md:px-8">
       <div className="mx-auto max-w-7xl">
+        <div className="absolute right-4 top-4 md:right-8 md:top-6">
+          <ThemeToggle />
+        </div>
         {/* Header */}
         <header className="mb-8 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/50 px-4 py-1.5 mb-4 text-xs text-muted-foreground backdrop-blur">
