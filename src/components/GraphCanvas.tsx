@@ -119,30 +119,37 @@ export function GraphCanvas({
           const dy = b.y - a.y;
           const len = Math.hypot(dx, dy) || 1;
           const r = 22;
+          const hasReverse = edges.some((o) => o.from === e.to && o.to === e.from);
+          const curveOffset = hasReverse ? 28 : 0;
+          const px = -dy / len;
+          const py = dx / len;
           const sx = a.x + (dx / len) * r;
           const sy = a.y + (dy / len) * r;
           const ex = b.x - (dx / len) * r;
           const ey = b.y - (dy / len) * r;
-          const mx = (sx + ex) / 2;
-          const my = (sy + ey) / 2;
-          // Offset label perpendicular
-          const ox = (-dy / len) * 12;
-          const oy = (dx / len) * 12;
+          const cx = (a.x + b.x) / 2 + px * curveOffset;
+          const cy = (a.y + b.y) / 2 + py * curveOffset;
+          const mx = 0.25 * sx + 0.5 * cx + 0.25 * ex;
+          const my = 0.25 * sy + 0.5 * cy + 0.25 * ey;
+          const labelOffset = hasReverse ? 0 : 12;
+          const lx = mx + px * labelOffset;
+          const ly = my + py * labelOffset;
           const active = isHighlighted(e.from, e.to);
+          const pathD = hasReverse
+            ? `M ${sx} ${sy} Q ${cx} ${cy} ${ex} ${ey}`
+            : `M ${sx} ${sy} L ${ex} ${ey}`;
           return (
             <g key={i}>
-              <line
-                x1={sx}
-                y1={sy}
-                x2={ex}
-                y2={ey}
+              <path
+                d={pathD}
+                fill="none"
                 stroke={active ? "var(--edge-active)" : "var(--edge)"}
                 strokeWidth={active ? 3 : 2}
                 markerEnd={active ? "url(#arrow-active)" : "url(#arrow)"}
                 className={active ? "animate-flow" : ""}
               />
               <g
-                transform={`translate(${mx + ox}, ${my + oy})`}
+                transform={`translate(${lx}, ${ly})`}
                 className={onEdgeDelete ? "cursor-pointer" : ""}
                 onClick={(ev) => {
                   if (!onEdgeDelete) return;
