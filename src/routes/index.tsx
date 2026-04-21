@@ -365,7 +365,7 @@ function Index() {
             <section className="mb-6">
               <GraphCanvas
                 title="Shortest Path Graph"
-                subtitle="Edges that participate in at least one shortest path between some pair"
+                subtitle="Shortest distance between every pair of nodes"
                 nodes={nodes}
                 edges={shortestPathEdges}
                 highlightEdges={queryHighlight}
