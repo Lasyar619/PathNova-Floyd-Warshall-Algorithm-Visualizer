@@ -272,7 +272,9 @@ function Index() {
                 <p className="text-sm">
                   <span className="text-primary font-medium">Click empty space</span> to add a node ·{" "}
                   <span className="text-accent font-medium">Click two nodes</span> to add an edge ·
-                  Drag nodes to reposition
+                  Drag to reposition ·{" "}
+                  <span className="text-destructive font-medium">Right-click a node</span> or{" "}
+                  <span className="text-destructive font-medium">click an edge weight</span> to delete
                 </p>
               </div>
               <div>
