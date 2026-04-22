@@ -31,7 +31,7 @@ export function MatrixInput({ onApply, initialN = 4, updatedMatrix = null }: Pro
     ),
   );
   const [error, setError] = useState<string | null>(null);
-  const [symmetric, setSymmetric] = useState(true);
+  const [symmetric, setSymmetric] = useState(false);
 
   // Resize matrix when n changes
   useEffect(() => {
