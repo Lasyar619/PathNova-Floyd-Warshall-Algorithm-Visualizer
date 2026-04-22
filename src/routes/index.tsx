@@ -108,8 +108,21 @@ function Index() {
     } else if (selectedNode === id) {
       setSelectedNode(null);
     } else {
-      const w = parseInt(edgeWeight) || 1;
       const exists = edges.find((e) => e.from === selectedNode && e.to === id);
+      const defaultVal = exists ? String(exists.weight) : edgeWeight || "1";
+      const input = window.prompt(
+        `Enter edge cost from node ${selectedNode} → ${id}`,
+        defaultVal,
+      );
+      if (input === null) {
+        setSelectedNode(null);
+        return;
+      }
+      const w = parseFloat(input);
+      if (!Number.isFinite(w)) {
+        setSelectedNode(null);
+        return;
+      }
       if (exists) {
         setEdges(edges.map((e) => (e === exists ? { ...e, weight: w } : e)));
       } else {
